@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Currency Converter</title>
+</head>
+<body>
+	<h1>Currency Converter</h1>
+	<p>Enter amount in JPY or USD:</p>
+	<input type="number" id="amount" placeholder="Enter amount" min="0" step="0.01">
+	<select id="currency">
+		<option value="JPY">JPY</option>
+		<option value="USD">USD</option>
+	</select>
+	<button onclick="convert()">Convert</button>
+	<p id="result"></p>
+
+	<script>
+		function convert() {
+			const amount = document.getElementById("amount").value;
+			const currency = document.getElementById("currency").value;
+			const apikey = "YOUR_API_KEY_HERE"; // replace with your Open Exchange Rates API key
+			const url = `https://openexchangerates.org/api/latest.json?app_id=${apikey}&symbols=USD`;
+			let rate = 0;
+			let convertedAmount = 0;
+
+			// send a GET request to the API to retrieve the latest exchange rates
+			fetch(url)
+				.then(response => response.json())
+				.then(data => {
+					rate = data.rates.USD;
+					if (currency === "JPY") {
+						convertedAmount = amount / rate;
+						document.getElementById("result").innerHTML = `Amount in USD: ${convertedAmount.toFixed(2)}`;
+					} else {
+						convertedAmount = amount * rate;
+						document.getElementById("result").innerHTML = `Amount in JPY: ${convertedAmount.toFixed(2)}`;
+					}
+				})
+				.catch(error => {
+					console.log(error);
+					document.getElementById("result").innerHTML = "Failed to retrieve exchange rate data. Please try again later.";
+				});
+		}
+	</script>
+</body>
+</html>
